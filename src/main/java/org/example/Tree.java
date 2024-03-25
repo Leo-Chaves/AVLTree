@@ -149,12 +149,13 @@ public class Tree <T extends Comparable <T>> {
                 switch (pai.getBalance()) {
                     case 1:
                      pai.setBalance(0);
+                     this.status = false;
                         break;
                     case 0:
-                     
+                    pai.setBalance(-1);
                     break;
                     case -1:
-                        
+                    pai = this.rotateRight(pai);
                         break;
                 
                     default:
@@ -164,6 +165,23 @@ public class Tree <T extends Comparable <T>> {
                 return node.getRight();
 
             } else if (node.getRight() == null) {
+                if(this.status = true){
+                    switch (pai.getBalance()) {
+                        case 1:
+                         pai = this.rotateLeft(pai);
+                            break;
+                        case 0:
+                        pai.setBalance(1);
+                            break;
+                        case -1:
+                        pai.setBalance(0);
+                        this.status = false;
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                }
                 return node.getLeft();
 
             }          
@@ -174,8 +192,8 @@ public class Tree <T extends Comparable <T>> {
             novoNode.setLeft(remover(node.getLeft(), mostLeftChild.getInfo()));
             return novoNode;
         }
-    
         return node;
+    
     }
 
 
