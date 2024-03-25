@@ -145,6 +145,7 @@ public class Tree <T extends Comparable <T>> {
         } else {
     
             if (node.getLeft() == null) {
+                node = node.getRight();
                 if(this.status = true){
                 switch (pai.getBalance()) {
                     case 1:
@@ -162,9 +163,8 @@ public class Tree <T extends Comparable <T>> {
                         break;
                 }
             }
-                return node.getRight();
-
             } else if (node.getRight() == null) {
+                node = node.getLeft();
                 if(this.status = true){
                     switch (pai.getBalance()) {
                         case 1:
@@ -182,17 +182,18 @@ public class Tree <T extends Comparable <T>> {
                             break;
                     }
                 }
-                return node.getLeft();
 
-            }          
+            }else{      
 
             Node<T> mostLeftChild = encontrarMenorMaiorValor(node.getLeft());
             Node<T> novoNode = new Node<T>(mostLeftChild.getInfo());
             novoNode.setRight(node.getRight());
             novoNode.setLeft(remover(node.getLeft(), mostLeftChild.getInfo()));
-            return novoNode;
+            node = novoNode;
+
+            }
         }
-        return node;
+        return pai;
     
     }
 
