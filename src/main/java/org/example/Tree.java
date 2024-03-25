@@ -30,9 +30,8 @@ public class Tree <T extends Comparable <T>> {
         if (r == null) {
             r = new Node<T>(value);
             this.status= true;
-
         }else if (r.getInfo().compareTo(value) > 0) {
-            r.setLeft(insertNode (r.getLeft(),value));
+            r.setLeft(insertNode(r.getLeft(),value));
             if (this.status == true) {
                 switch (r.getBalance()) {
                     case 1: 
@@ -133,22 +132,41 @@ public class Tree <T extends Comparable <T>> {
     }
 
     public Node<T>  remover(Node<T>  node, T key) {
+        Node<T> pai = node;
+
         if (node == null) {
             return node;
         } else if (key.compareTo(node.getInfo()) < 0) {
+            pai=node.getLeft();
             node.setLeft(remover(node.getLeft(), key));
         } else if (key.compareTo(node.getInfo()) > 0) {
+            pai=node.getRight();
             node.setRight(remover(node.getRight(), key));
         } else {
     
             if (node.getLeft() == null) {
-                checkBalance(node);
+                if(this.status = true){
+                switch (pai.getBalance()) {
+                    case 1:
+                     pai.setBalance(0);
+                        break;
+                    case 0:
+                     
+                    break;
+                    case -1:
+                        
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
                 return node.getRight();
 
             } else if (node.getRight() == null) {
                 return node.getLeft();
 
-            }
+            }          
 
             Node<T> mostLeftChild = encontrarMenorMaiorValor(node.getLeft());
             Node<T> novoNode = new Node<T>(mostLeftChild.getInfo());
@@ -160,10 +178,6 @@ public class Tree <T extends Comparable <T>> {
         return node;
     }
 
-    private void checkBalance(Node<T> node) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'checkBalance'");
-    }
 
     private Node<T> encontrarMenorMaiorValor(Node<T>  node) {
         Node<T>  atual = node;
