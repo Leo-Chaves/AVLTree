@@ -1,14 +1,15 @@
 package org.example;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
-public class Tree<T extends Comparable <T>> {
+public class Tree <T extends Comparable <T>> {
     private Node<T> root;
     private boolean status;
 
     public Tree() {
 
+    }
+
+    public Node<T> getRoot() {
+        return root;
     }
 
     private boolean isEmpty() {
@@ -18,7 +19,7 @@ public class Tree<T extends Comparable <T>> {
 
     public void insert(T value) {
         if (this.isEmpty() == true) {
-            this.root = new Node(value);
+            this.root = new Node<T>(value);
             this.status = true;
         } else {
             this.root = insertNode(this.root, value);
@@ -27,109 +28,152 @@ public class Tree<T extends Comparable <T>> {
 
     private Node<T> insertNode(Node<T> r, T value) {
         if (r == null) {
-            r = new Node<>(value);
+            r = new Node<T>(value);
+            this.status= true;
+
         }else if (r.getInfo().compareTo(value) > 0) {
             r.setLeft(insertNode (r.getLeft(),value));
             if (this.status == true) {
                 switch (r.getBalance()) {
-                    case 1: r.setBalance(0);
-                    this.status = false;
-                    break;
-                    case 0: r.setBalance(-1);
-                    break;
-                    case -1 : r = this.rotateRight(r);
-                    break;
+                    case 1: 
+                        r.setBalance(0);
+                        this.status = false;
+                        break;
+                    case 0: 
+                        r.setBalance(-1);
+                        break;
+                    case -1 : 
+                        r = this.rotateRight(r);
+                        break;
                 }
             }
         }else{
-            r.setRight(insertNode (r.getRight(),value));
+            r.setRight(insertNode(r.getRight(),value));
             if (this.status == true) {
                 switch (r.getBalance()) {
-                    case -1: r.setBalance(0);
+                    case -1: 
+                        r.setBalance(0);
                         this.status = false;
                         break;
-                    case 0: r.setBalance(-1);
+                    case 0: 
+                        r.setBalance(1);
                         break;
-                    case 1 : r = this.rotateLeft(r);
-                    break;
+                    case 1 :
+                         r = this.rotateLeft(r);
+                        break;
                 }
             }
         }
         return r;
     }
 
-    private Node<T> rotateLeft(Node<T> r) {
-        Node<T> a = r.getRight();
-        Node<T> b = a.getLeft();
-        Node<T> c = r;
-
-        if (a.getBalance() == -1) {
-            // Caso de rotação dupla à direita
-            Node<T> d = b.getRight();
-            Node<T> e = b.getLeft();
-
-            // Rotação à esquerda na subárvore Y
-            b.setLeft(c);
-            c.setRight(d);
-
-            // Rotação à direita no nó X
-            r.setRight(b);
+    private Node<T> rotateLeft(Node<T> a) {
+        Node<T> b, c;
+        b = a.getRight();
+        if (b.getBalance() == 1) {  // rot. simples direita
+            a.setRight(b.getLeft());
             b.setLeft(a);
-
-            // Atualização dos fatores de balanceamento
-            c.setBalance(0);
-            b.setBalance(0);
-            a.setBalance(1);
-        } else {
-            // Caso de rotação simples à esquerda
-            r.setRight(b);
-            a.setLeft(c);
-
-            // Atualização dos fatores de balanceamento
-            c.setBalance(0);
             a.setBalance(0);
-        }
+            a = b;
+        }else {  // rotação dupla
+                c = b.getLeft();
+                b.setLeft(c.getRight());
+                c.setRight(b);
+                a.setRight(c.getLeft());
+                c.setLeft(a);
+                if (c.getBalance() == 1) {
+                    a.setBalance(-1);
+                } else {
+                    a.setBalance(0);
+                }if (c.getBalance() == -1) {
+                    b.setBalance(1);
+                } else {
+                    b.setBalance(0);
+                }
+                a = c;
+            }
+            a.setBalance(0);
+            this.status = false;
+            return a;}
 
-        return a;
-    }
-
-    private Node<T> rotateRight(Node<T> r) {
-        Node<T> a = r.getLeft();
-        Node<T> b = a.getRight();
-        Node<T> c = r;
-
-        if (a.getBalance() == 1) {
-            // Caso de rotação dupla à esquerda
-            Node<T> d = b.getLeft();
-            Node<T> e = b.getRight();
-
-            // Rotação à direita na subárvore Y
-            b.setRight(c);
-            c.setLeft(d);
-
-            // Rotação à esquerda no nó X
-            r.setLeft(b);
+    private Node<T> rotateRight(Node<T> a) {
+        Node<T> b, c;
+        b = a.getLeft();
+        if (b.getBalance() == -1) {  // rot. simples esquerda
+            a.setLeft(b.getRight());
             b.setRight(a);
-
-            // Atualização dos fatores de balanceamento
-            c.setBalance(0);
-            b.setBalance(0);
-            a.setBalance(-1);
-        } else {
-            // Caso de rotação simples à direita
-            r.setLeft(b);
-            a.setRight(c);
-
-            // Atualização dos fatores de balanceamento
-            c.setBalance(0);
             a.setBalance(0);
+            a = b;
+        }else {   // rotação dupla
+            c = b.getRight();
+            b.setRight(c.getLeft());
+            c.setLeft(b);
+            a.setLeft(c.getRight());
+            c.setRight(a);
+            if (c.getBalance() == -1) {
+                a.setBalance(1);
+            } else {
+                a.setBalance(0);
+            }
+            if (c.getBalance() == 1) {
+                b.setBalance(-1);
+            } else {
+                b.setBalance(0);
+            }
+            a = c;
         }
-
+        a.setBalance(0);
+        ;this.status = false;
         return a;
+
     }
 
-
-    public Node<T> getRoot() {
-        return root;
+    public void deletar(T value) {
+        this.root = remover(this.root, value);
     }
+
+    public Node<T>  remover(Node<T>  node, T key) {
+        if (node == null) {
+            return node;
+        } else if (key.compareTo(node.getInfo()) < 0) {
+            node.setLeft(remover(node.getLeft(), key));
+        } else if (key.compareTo(node.getInfo()) > 0) {
+            node.setRight(remover(node.getRight(), key));
+        } else {
+    
+            if (node.getLeft() == null) {
+                checkBalance(node);
+                return node.getRight();
+
+            } else if (node.getRight() == null) {
+                return node.getLeft();
+
+            }
+
+            Node<T> mostLeftChild = encontrarMenorMaiorValor(node.getLeft());
+            Node<T> novoNode = new Node<T>(mostLeftChild.getInfo());
+            novoNode.setRight(node.getRight());
+            novoNode.setLeft(remover(node.getLeft(), mostLeftChild.getInfo()));
+            return novoNode;
+        }
+    
+        return node;
+    }
+
+    private void checkBalance(Node<T> node) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'checkBalance'");
+    }
+
+    private Node<T> encontrarMenorMaiorValor(Node<T>  node) {
+        Node<T>  atual = node;
+    
+        while (atual.getRight() != null) {
+            atual = atual.getRight();
+        }
+    
+        return atual;
+    }
+     
 }
+

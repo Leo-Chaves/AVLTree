@@ -1,21 +1,29 @@
 package org.example;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
+        Tree<Integer> tree = new Tree<Integer>();
 
-        Tree avl = new Tree();
-        avl.insert(1);
-        avl.insert(2);
-        avl.insert(3);
+        tree.insert(10);
 
+        System.out.println(tree.getRoot().getInfo());
         System.out.println();
-        System.out.println(avl.getRoot().getInfo());
-        System.out.println();
-        System.out.println(avl.getRoot().getLeft().getInfo());
-        System.out.println();
-        System.out.println(avl.getRoot().getLeft().getLeft().getInfo());
 
+        tree.insert(15);
+        tree.insert(20);
+        tree.insert(5);
+
+        System.out.println(tree.getRoot().getInfo());
+        System.out.println();
+
+
+        tree.deletar(15);
+
+        System.out.println(tree.getRoot().getInfo());
+        System.out.println();
+
+        tree.deletar(20);
+        tree.insert(3);
+        System.out.println(tree.getRoot().getInfo());
     }
 }
